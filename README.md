@@ -7,7 +7,7 @@ moduli che il gioco non usa, ottimizzato per la dimensione. Serve a fare un APK 
 - `.github/workflows/android.yml`: la compilazione su GitHub Actions (release, arm64).
 
 Per compilare: scheda Actions > "Modello Android" > Run workflow, oppure `gh workflow run android.yml`.
-Il risultato è l'artefatto `modello-android-<versione>` con `android_release.apk`, da indicare in
-Godot in Esporta > Android > Custom Template > Release.
+Il risultato è una release del repository con `android_release.apk`, da indicare in Godot in
+Esporta > Android > Custom Template. Per scaricare l'ultima: `gh release download -R marksaints70/godot-android-2d -p android_release.apk`.
 
 Quando si aggiorna Godot va cambiato `GODOT_TAG` nel workflow, con la stessa versione dell'editor.

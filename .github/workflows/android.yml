@@ -1,12 +1,16 @@
 # Compila il modello di esportazione Android (release, arm64) di Godot con le opzioni di custom.py.
 # Si lancia a mano dalla scheda Actions (o con `gh workflow run android.yml`) e a ogni modifica.
-# Il risultato (android_release.apk) si scarica dagli artefatti della compilazione.
+# Il risultato (android_release.apk) si pubblica come release del repository: gli artefatti scadono
+# dopo 90 giorni, le release restano.
 name: Modello Android
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
+
+permissions:
+  contents: write  # per pubblicare la release
 
 env:
   GODOT_TAG: 4.7.1-stable  # deve essere la stessa versione dell'editor usato per esportare
@@ -55,11 +59,12 @@ jobs:
           ./gradlew generateGodotTemplates
           ls -l ../../../bin/
 
-      - name: Artefatto
-        uses: actions/upload-artifact@v4
-        with:
-          name: modello-android-${{ env.GODOT_TAG }}
-          path: |
-            godot/bin/android_release.apk
-            godot/bin/android_source.zip
-            godot/custom.py
+      - name: Release
+        working-directory: godot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "godot-${{ env.GODOT_TAG }}-${{ github.run_number }}" -R "${{ github.repository }}" \
+            --title "Godot ${{ env.GODOT_TAG }}, compilazione ${{ github.run_number }}" \
+            --notes "Modello Android release arm64 con le opzioni di custom.py (commit ${{ github.sha }})." \
+            bin/android_release.apk bin/android_source.zip custom.py
