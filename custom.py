@@ -18,8 +18,9 @@ disable_navigation_2d = "yes"
 module_text_server_adv_enabled = "no"
 module_text_server_fb_enabled = "yes"
 
-# Moduli spenti: formati, rete, 3D, strumenti dell'editor. Restano gdscript, freetype, webp, svg
-# (icone del tema predefinito), glslang (shader Vulkan), ogg e vorbis (l'audio arriverà).
+# Moduli spenti: formati, multigiocatore, 3D, strumenti dell'editor. Restano gdscript, freetype, webp,
+# svg (icone del tema predefinito), glslang (shader Vulkan), ogg e vorbis (l'audio arriverà), mbedtls
+# e websocket (rete: HTTPS e connessioni continue per classifiche e salvataggi nel cloud, che arriveranno).
 module_astcenc_enabled = "no"
 module_basis_universal_enabled = "no"
 module_bcdec_enabled = "no"
@@ -43,7 +44,6 @@ module_jpg_enabled = "no"
 module_jsonrpc_enabled = "no"
 module_ktx_enabled = "no"
 module_lightmapper_rd_enabled = "no"
-module_mbedtls_enabled = "no"  # niente rete: da riaccendere per classifiche o salvataggi nel cloud
 module_meshoptimizer_enabled = "no"
 module_mobile_vr_enabled = "no"
 module_mp3_enabled = "no"
@@ -63,7 +63,6 @@ module_upnp_enabled = "no"
 module_vhacd_enabled = "no"
 module_visual_shader_enabled = "no"
 module_webrtc_enabled = "no"
-module_websocket_enabled = "no"
 module_webxr_enabled = "no"
 module_xatlas_unwrap_enabled = "no"
 module_zip_enabled = "no"
