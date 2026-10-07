@@ -1,0 +1,65 @@
+# Compila il modello di esportazione Android (release, arm64) di Godot con le opzioni di custom.py.
+# Si lancia a mano dalla scheda Actions (o con `gh workflow run android.yml`) e a ogni modifica.
+# Il risultato (android_release.apk) si scarica dagli artefatti della compilazione.
+name: Modello Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  GODOT_TAG: 4.7.1-stable  # deve essere la stessa versione dell'editor usato per esportare
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - name: Ricetta
+        uses: actions/checkout@v6
+
+      - name: Sorgenti di Godot
+        uses: actions/checkout@v6
+        with:
+          repository: godotengine/godot
+          ref: ${{ env.GODOT_TAG }}
+          path: godot
+
+      - name: Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Python e SCons
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - run: python -m pip install scons
+
+      - name: Opzioni e Swappy (ritmo dei fotogrammi su Android, come nei modelli ufficiali)
+        working-directory: godot
+        run: |
+          cp ../custom.py custom.py
+          python ./misc/scripts/install_swappy_android.py
+
+      - name: Compilazione del motore
+        working-directory: godot
+        run: scons platform=android target=template_release arch=arm64 swappy=yes -j$(nproc)
+
+      - name: Modello APK
+        working-directory: godot/platform/android/java
+        run: |
+          ./gradlew generateGodotTemplates
+          ls -l ../../../bin/
+
+      - name: Artefatto
+        uses: actions/upload-artifact@v4
+        with:
+          name: modello-android-${{ env.GODOT_TAG }}
+          path: |
+            godot/bin/android_release.apk
+            godot/bin/android_source.zip
+            godot/custom.py
